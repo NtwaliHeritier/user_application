@@ -1,0 +1,11 @@
+<div class="w-4/5" phx-hook="Plots" id="your-plots">
+    <div :if={Enum.empty?(@plots)} class="text-center">
+        <h1>No plots to show</h1>
+    </div>
+    <div :for={plot <- @plots}>
+        <div id={"plot_#{plot.id}"}></div>
+        <.link :if={@share && plot.csv !== :error} navigate={~p"/plot?#{[plot_id: plot.id]}"} class="block mx-auto mb-4 w-12 text-center text-white bg-slate-900 edit">Edit</.link>
+        <.link :if={@share  && plot.csv !== :error} navigate={~p"/share_plot?#{[plot_id: plot.id]}"} class="block mx-auto mb-5 w-12 text-center text-white bg-slate-900 share">Share</.link>
+    <hr/>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" class="[scrollbar-gutter:stable]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Phoenix Framework">
+      <%= assigns[:page_title] || "UserApplication" %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  </head>
+  <body class="bg-white antialiased">
+    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+      <%= if @current_user do %>
+        <li class="text-[0.8125rem] leading-6 text-zinc-900">
+          <%= @current_user.email %>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/settings"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Settings
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/log_out"}
+            method="delete"
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Log out
+          </.link>
+        </li>
+      <% else %>
+        <li>
+          <.link
+            href={~p"/users/register"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Register
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/log_in"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Log in
+          </.link>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="flex h-screen">
+      <div class="w-1/5 bg-slate-900 h-full text-white py-10 overflow-auto" :if={@current_user}>
+    
+          <div class="text-white p-5">
+            <.link navigate={~p"/plot"} class="create-plot">Create plot</.link>
+          </div>
+          <div class="text-white p-5">
+              <.link patch={~p"/?#{[path: "your-plots"]}"}>Your plots</.link>
+          </div>
+          <div class="text-white p-5">
+            <.link patch={~p"/?#{[path: "shared-plots"]}"}>Shared plots</.link>
+          </div>
+      </div>
+      <div class="w-1/5 h-full text-white py-10" :if={!@current_user}>
+        </div>
+        <div class="w-4/5 h-full">
+    <%= @inner_content %>
+  </div>
+  </div>
+  </body>
+</html>
