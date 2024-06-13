@@ -4,14 +4,6 @@ defmodule UserApplicationWeb.ShareLiveTest do
     import Phoenix.LiveViewTest
 
     alias UserApplication.{Accounts, Plots}
-    # import Mox
-
-    # setup :verify_on_exit!
-
-    # setup do
-    #     UserApplication.Csv.Cache.start_link([name: :parser_test])
-    #     :ok
-    # end
 
     test "redirects to / after a plot is edited", %{conn: conn} do
         %{conn: conn} = register_and_log_in_user(%{conn: conn})
@@ -37,5 +29,22 @@ defmodule UserApplicationWeb.ShareLiveTest do
         
         user2 = Accounts.get_user_by_email(user2.email) |> UserApplication.Repo.preload([account: [shared_ownerships: :plot]])
         assert length(user2.account.shared_ownerships) === 1
+
+        # retry to share
+        {:ok, view, html} = live(conn, "/share_plot?plot_id=#{plot.id}")
+        assert html =~ "Share plot"
+
+        form_data = %{
+            "email" => user2.email
+          }
+      
+          {:ok, conn} = 
+            view
+            |> form("form", form_data)
+            |> render_submit()
+            |> follow_redirect(conn, "/")
+
+        assert conn.assigns.live_module == UserApplicationWeb.IndexLive
+        assert conn.assigns.flash == %{"error" => "User does not exist or plot already shared with them"}
     end
 end

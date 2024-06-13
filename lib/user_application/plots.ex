@@ -185,6 +185,15 @@ defmodule UserApplication.Plots do
     Repo.delete(ownership)
   end
 
+
+  def get_ownership_by_plot_and_account(plot_id, account_id) do
+    Ownership
+    |> Ownership.by_plot_id(plot_id)
+    |> Ownership.by_account_id(account_id)
+    |> Ownership.by_collaborator(:collaborator)
+    |> Repo.one()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking ownership changes.
 
