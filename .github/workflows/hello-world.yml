@@ -7,6 +7,6 @@ jobs:
   print_content:
     runs-on: ubuntu-latest
     steps:
-      - name: display content
+      - name: display contents
         uses: actions/checkout@v4
       - run: ls
